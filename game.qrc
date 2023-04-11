@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/textures">
+        <file>texture/blocks.png</file>
+        <file>texture/grass.png</file>
+    </qresource>
+    <qresource prefix="/skybox">
+        <file>skybox/back.jpg</file>
+        <file>skybox/bottom.jpg</file>
+        <file>skybox/front.jpg</file>
+        <file>skybox/left.jpg</file>
+        <file>skybox/right.jpg</file>
+        <file>skybox/top.jpg</file>
+    </qresource>
+    <qresource prefix="/shaders">
+        <file>shaders/blockfs.glsl</file>
+        <file>shaders/blockvs.glsl</file>
+        <file>shaders/grassfs.glsl</file>
+        <file>shaders/grassvs.glsl</file>
+        <file>shaders/skyboxfs.glsl</file>
+        <file>shaders/skyboxvs.glsl</file>
+    </qresource>
+</RCC>
