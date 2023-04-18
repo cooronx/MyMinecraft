@@ -14,7 +14,7 @@
 #include "camera.h"
 #include "block.h"
 #include "chunk.h"
-
+#include "tools.h"
 
 class Widget : public QOpenGLWidget,protected QOpenGLFunctions
 {
@@ -33,6 +33,7 @@ private:
     QOpenGLTexture* grassTexture;
     Block* m_block1;
     Block* m_block2;
+    std::unique_ptr <CrossCursor> cursor = nullptr;
 public:
     Widget();
     ~Widget() override;

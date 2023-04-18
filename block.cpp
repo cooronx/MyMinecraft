@@ -26,7 +26,6 @@ void Block::draw(const QMatrix4x4 &model, const QMatrix4x4& view, const QMatrix4
     VAO->bind();
     this->bind();
     core->glActiveTexture(GL_TEXTURE0);
-    //core->glDrawElements(GL_TRIANGLES,36,GL_UNSIGNED_INT,0);
     core->glDrawArrays(GL_TRIANGLES,0,36);
     VAO->release();
     blockShader->release();
@@ -209,20 +208,16 @@ void Block::initVertexPos()
     IBO = new QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
     VAO->create();
     VBO->create();
-    IBO->create();
     VAO->bind();
     VBO->bind();
-    IBO->bind();
     VBO->allocate(sizeof (vertices)+sizeof (upface)+sizeof (bottomface));
     VBO->write(0,vertices,sizeof (vertices));
     VBO->write(sizeof (vertices),upface,sizeof (upface));
     VBO->write(sizeof (vertices)+sizeof (upface),bottomface,sizeof (bottomface));
-    //int pos = blockShader->attributeLocation("aPos");
     blockShader->setAttributeBuffer(0,GL_FLOAT,0,3,5*sizeof(float));
     blockShader->enableAttributeArray(0);
     blockShader->setAttributeBuffer(1,GL_FLOAT,3*sizeof (float),2,5*sizeof(float));
     blockShader->enableAttributeArray(1);
-    //IBO->allocate(index,sizeof(index));
     VAO->release();
 }
 

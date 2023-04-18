@@ -18,5 +18,7 @@
         <file>shaders/grassvs.glsl</file>
         <file>shaders/skyboxfs.glsl</file>
         <file>shaders/skyboxvs.glsl</file>
+        <file>shaders/crosshairfs.glsl</file>
+        <file>shaders/crosshairvs.glsl</file>
     </qresource>
 </RCC>

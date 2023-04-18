@@ -17,7 +17,7 @@ Widget::Widget()
     QSurfaceFormat x;
     x.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     setFormat(x);
-    //setCursor(Qt::CrossCursor);
+    setCursor(Qt::BlankCursor);
     this->setFixedSize(1000,800);
     faces =
     {
@@ -39,15 +39,15 @@ Widget::~Widget()
 void Widget::initializeGL()
 {
     initializeOpenGLFunctions();
+    glEnable(GL_PROGRAM_POINT_SIZE);
     glClearColor(0.2f,0.2f,0.2f,1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_CULL_FACE);//加入面剔除
     skybox = new SkyBox(faces,":/shaders/shaders/skyboxvs.glsl",":/shaders/shaders/skyboxfs.glsl",this);
-    m_block1 = new Block(this->context()->functions(),Block::DirtWithGrass,true);
-    m_block2 = new Block(this->context()->functions(),Block::DirtWithGrass,true);
     chunk_test = new Chunk(this->context()->functions());
+    cursor.reset(new CrossCursor(this->context()->functions()));
 }
 
 void Widget::resizeGL(int w, int h)
@@ -57,14 +57,11 @@ void Widget::resizeGL(int w, int h)
 
 void Widget::paintGL()//记得观察，别把初始化放在渲染里面了
 {
+    cursor->draw();
     QMatrix4x4 projection,model{};
     projection.setToIdentity();
     projection.perspective(camera->zoom,this->width()/this->height(),0.1f,100.0f);
     model.setToIdentity();
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    m_block1->draw(model,camera->getViewMatrix(),projection);
-    //m_block2->setPos(QVector3D(4.0f,4.0f,4.0f));
-    //m_block2->draw(model,camera->getViewMatrix(),projection);
     chunk_test->draw(model,camera->getViewMatrix(),projection);
     skybox->draw(camera,projection);//画天空盒
     qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
@@ -84,7 +81,8 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
         firstMouse = false;
     }
     camera->processMouseMovement(xoffset,yoffset);//camera process
-    QCursor::setPos(geometry().center());// keep cenetered
+    QPoint glob = mapToGlobal(QPoint(width()/2,height()/2));
+    QCursor::setPos(glob);
     QOpenGLWidget::mouseMoveEvent(event);
 }
 

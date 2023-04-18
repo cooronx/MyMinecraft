@@ -15,6 +15,7 @@ SOURCES += \
     chunk.cpp \
     main.cpp \
     skybox.cpp \
+    tools.cpp \
     widget.cpp
 
 HEADERS += \
@@ -23,6 +24,7 @@ HEADERS += \
     camera.h \
     chunk.h \
     skybox.h \
+    tools.h \
     widget.h
 
 FORMS += \
