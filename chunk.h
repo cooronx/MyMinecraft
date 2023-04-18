@@ -11,7 +11,7 @@
 #include <memory>
 #include <set>
 #include <QPair>
-#include "PerlinNoise.h"
+#include "PerlinNoise.hpp"
 #include "block.h"
 
 constexpr int CHUNK_SIZE = 16*16;

@@ -18,7 +18,7 @@ SOURCES += \
     widget.cpp
 
 HEADERS += \
-    PerlinNoise.h \
+    PerlinNoise.hpp \
     block.h \
     camera.h \
     chunk.h \

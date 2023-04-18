@@ -1,15 +1,6 @@
 #include "widget.h"
 
-static float plantVertices[] = {//这里y轴是反着的，相当于从上到下了
-     // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
-     0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-     0.0f, -0.5f,  0.0f,  0.0f,  1.0f,
-     1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
 
-     0.0f,  0.5f,  0.0f,  0.0f,  0.0f,
-     1.0f, -0.5f,  0.0f,  1.0f,  1.0f,
-     1.0f,  0.5f,  0.0f,  1.0f,  0.0f
- };
 static QVector<QVector3D> glassPosition
 {
     QVector3D(-1.5f, 0.0f, -0.48f),
@@ -26,7 +17,7 @@ Widget::Widget()
     QSurfaceFormat x;
     x.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
     setFormat(x);
-    setCursor(Qt::BlankCursor);
+    //setCursor(Qt::CrossCursor);
     this->setFixedSize(1000,800);
     faces =
     {
@@ -52,7 +43,7 @@ void Widget::initializeGL()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);//加入面剔除
     skybox = new SkyBox(faces,":/shaders/shaders/skyboxvs.glsl",":/shaders/shaders/skyboxfs.glsl",this);
     m_block1 = new Block(this->context()->functions(),Block::DirtWithGrass,true);
     m_block2 = new Block(this->context()->functions(),Block::DirtWithGrass,true);
@@ -85,15 +76,16 @@ void Widget::paintGL()//记得观察，别把初始化放在渲染里面了
 
 void Widget::mouseMoveEvent(QMouseEvent *event)
 {
-    float xoffset = event->x() - rect().center().x();
-    float yoffset = rect().center().y() - event->y();//计算偏离中心的值
+    float xoffset = event->position().x() - rect().center().x();
+    float yoffset = rect().center().y() - event->position().y();
     if(firstMouse){
-        xoffset = event->x();
-        yoffset = event->y();
+        xoffset = event->position().x();
+        yoffset = event->position().y();
         firstMouse = false;
     }
-    camera->processMouseMovement(xoffset,yoffset);
-    QCursor::setPos(geometry().center());//这里是保证鼠标指针不会动，保持中心位置
+    camera->processMouseMovement(xoffset,yoffset);//camera process
+    QCursor::setPos(geometry().center());// keep cenetered
+    QOpenGLWidget::mouseMoveEvent(event);
 }
 
 void Widget::keyPressEvent(QKeyEvent *event)

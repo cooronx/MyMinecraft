@@ -19,13 +19,14 @@ void Chunk::getHeightMap()
 {
     for (int x = 0; x < 20; x++) {
         for (int z = 0; z < 20; z++) {
-            Perlin ll;
-            int h = ll.PerlinNoise(x,z)*6+5;
+            const siv::PerlinNoise::seed_type seed = 1632213u;
+            const siv::PerlinNoise perlin{ seed };
+            int h = int(perlin.octave2D_01((x * 0.005), (z * 0.005), 100)*100+20)%10;
 
             this->heightMap[QPair<int,int>{x,z}] = h;
             Block *bl = new Block(core,Block::DirtWithGrass,true);
             bl->setPos(QVector3D(x,h,z));
-            for(int h = bl->getPos().y()-2;h<bl->getPos().y();++h){
+            for(int h = 0;h<bl->getPos().y();++h){
                 Block *c_bl = new Block(core,Block::DirtWithGrass);
                 QVector3D temp_pos = bl->getPos();
                 temp_pos.setY(h);
