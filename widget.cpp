@@ -19,6 +19,8 @@ Widget::Widget()
     setFormat(x);
     setCursor(Qt::BlankCursor);
     this->setFixedSize(1000,800);
+
+
     faces =
     {
         ":/skybox/skybox/right.jpg",
@@ -28,7 +30,7 @@ Widget::Widget()
         ":/skybox/skybox/front.jpg",
         ":/skybox/skybox/back.jpg"
     };
-    camera = new Camera(QVector3D(0.0f, 0.0f, 3.0f));
+
 }
 
 Widget::~Widget()
@@ -48,6 +50,7 @@ void Widget::initializeGL()
     skybox = new SkyBox(faces,":/shaders/shaders/skyboxvs.glsl",":/shaders/shaders/skyboxfs.glsl",this);
     chunk_test = new Chunk(this->context()->functions());
     cursor.reset(new CrossCursor(this->context()->functions()));
+    camera = new Camera(QVector3D(0.0f, 0.0f, 3.0f));
 }
 
 void Widget::resizeGL(int w, int h)
@@ -58,9 +61,9 @@ void Widget::resizeGL(int w, int h)
 void Widget::paintGL()//记得观察，别把初始化放在渲染里面了
 {
     cursor->draw();
-    QMatrix4x4 projection,model{};
     projection.setToIdentity();
-    projection.perspective(camera->zoom,this->width()/this->height(),0.1f,100.0f);
+    projection.perspective(camera->zoom,this->width()/this->height(),0.1f,100.0f);//
+    QMatrix4x4 model{};
     model.setToIdentity();
     chunk_test->draw(model,camera->getViewMatrix(),projection);
     skybox->draw(camera,projection);//画天空盒
@@ -74,7 +77,7 @@ void Widget::paintGL()//记得观察，别把初始化放在渲染里面了
 void Widget::mouseMoveEvent(QMouseEvent *event)
 {
     float xoffset = event->position().x() - rect().center().x();
-    float yoffset = rect().center().y() - event->position().y();
+    float yoffset = rect().center().y() - event->position().y();//y坐标是相反的
     if(firstMouse){
         xoffset = event->position().x();
         yoffset = event->position().y();
@@ -94,5 +97,32 @@ void Widget::keyPressEvent(QKeyEvent *event)
 void Widget::keyReleaseEvent(QKeyEvent *event)
 {
     camera->keys[event->key()] = false;
+}
+
+void Widget::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton){
+        ray = std::make_shared <QVector3D> (getCurrentRay(event->position().x(),event->position().y(),this->width(),this->height()));
+        qDebug()<<*ray;
+    }
+}
+
+QVector3D Widget::getCurrentRay(float mx, float my,int width,int height)
+{
+    float x = (2.0f * mx) / width - 1.0f;//从(w,h)映射到[-1,1]
+    float y = 1.0f - (2.0f * my) / height;
+    float z = 1.0f;//只需要远平面的那个点就行了
+    QVector3D ray_nds(x, y, z);
+    QVector4D ray_clip = QVector4D(ray_nds,1.0f);
+    QVector4D ray_eye = camera->getViewMatrix().inverted() * ray_clip;//乘以观察矩阵的逆矩阵
+    QVector4D ray_world = projection.inverted() * ray_eye;//乘以投影矩阵的逆矩阵,得到世界坐标
+    if(ray_world.w() != 0.0f){
+        ray_world.setX(ray_world.x()/ray_world.w());
+        ray_world.setY(ray_world.y()/ray_world.w());
+        ray_world.setZ(ray_world.z()/ray_world.w());
+    }
+    QVector3D ray_dir(ray_world.toVector3D() - camera->position);//减去相机的位置，就得到了所指的向量
+    ray_dir.normalize();
+    return ray_dir;
 }
 

@@ -19,7 +19,9 @@
 class Widget : public QOpenGLWidget,protected QOpenGLFunctions
 {
     Q_OBJECT
+
 private:
+    QMatrix4x4 projection;
     Chunk* chunk_test;
     Camera* camera;
     SkyBox* skybox;
@@ -34,6 +36,7 @@ private:
     Block* m_block1;
     Block* m_block2;
     std::unique_ptr <CrossCursor> cursor = nullptr;
+    std::shared_ptr <QVector3D> ray = nullptr;
 public:
     Widget();
     ~Widget() override;
@@ -41,10 +44,12 @@ protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-private:
     void mouseMoveEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent* event) override;
     void keyReleaseEvent(QKeyEvent* event) override;
+    void mousePressEvent(QMouseEvent* event)override;
+private:
     void initGrass();
+    QVector3D getCurrentRay(float mx,float my,int width,int height);//生成当前对应的射线
 };
 #endif // WIDGET_H
