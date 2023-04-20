@@ -33,8 +33,6 @@ private:
     QOpenGLBuffer* grassVBO;
     QOpenGLShaderProgram* grassShader;
     QOpenGLTexture* grassTexture;
-    Block* m_block1;
-    Block* m_block2;
     std::unique_ptr <CrossCursor> cursor = nullptr;
     std::shared_ptr <QVector3D> ray = nullptr;
 public:

@@ -44,6 +44,7 @@ QVector3D Block::getPos() const
 
 void Block::setIsTop(bool state)
 {
+    Q_UNUSED(state);
     this->showUpface=true;
     initTexcoord(currentType);
     initVertexPos();

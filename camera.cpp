@@ -11,7 +11,9 @@ void Camera::processKeyboard(Camera_Movement direction, GLfloat deltaTime)
 {
   GLfloat velocity = this->movementSpeed * deltaTime;
   if (direction == FORWARD)
+  {
     this->position += this->front * velocity;
+  }
   if (direction == BACKWARD)
     this->position -= this->front * velocity;
   if (direction == LEFT)
@@ -24,8 +26,10 @@ void Camera::processKeyboard(Camera_Movement direction, GLfloat deltaTime)
     this->position -= this->worldUp * velocity;
 }
 
+
 void Camera::processMouseMovement(GLfloat xoffset, GLfloat yoffset, GLboolean constraintPitch)
 {
+  Q_UNUSED(constraintPitch);
   xoffset *= this->mouseSensitivity;
   yoffset *= this->mouseSensitivity;
 
@@ -51,7 +55,6 @@ void Camera::processMouseScroll(GLfloat yoffset)
 
 void Camera::processInput(GLfloat dt)
 {
-
     if (keys[Qt::Key_W])
       processKeyboard(FORWARD, dt);
     if (keys[Qt::Key_S])
@@ -65,6 +68,7 @@ void Camera::processInput(GLfloat dt)
     if (keys[Qt::Key_Shift])
       processKeyboard(DOWN, dt);
 }
+
 
 void Camera::updateCameraVectors()
 {

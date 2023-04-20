@@ -15,19 +15,31 @@ void Chunk::draw(const QMatrix4x4 &model, const QMatrix4x4 &view, const QMatrix4
 
 }
 
+bool Chunk::checkPosHasBlock(const QVector3D &pos)
+{
+    if(blocksPos[std::make_pair(pos.x(),pos.y())] == pos.z()){
+        qDebug()<<"真的";
+        return true;
+    }
+    else return false;
+}
+
 void Chunk::getHeightMap()
 {
-    for (int x = 0; x < 20; x++) {
-        for (int z = 0; z < 20; z++) {
-            const siv::PerlinNoise::seed_type seed = 1632213u;
-            const siv::PerlinNoise perlin{ seed };
-            int h = int(perlin.octave2D_01((x * 0.005), (z * 0.005), 100)*100+20)%10;
+    for (int x = 0; x < 16; x++) {
+        for (int z = 0; z < 16; z++) {
+            /*const siv::PerlinNoise::seed_type seed = 123456u;
+            const siv::PerlinNoise perlin{ seed };*/
+            //噪声太折磨了，留着吧
+            SimplexNoise simpleNoise(0.1f/400.0f,0.5f,1.99f,0.5f);
+            int h  = int((simpleNoise.fractal(7,x,z)+0.005)*100)%10;
+            //int h = int(perlin.octave2D_01((x * 0.01), (z * 0.01), 4)*100+17)%10;
 
-            this->heightMap[QPair<int,int>{x,z}] = h;
-            Block *bl = new Block(core,Block::DirtWithGrass,true);
+            std::shared_ptr<Block>bl(new Block(core,Block::DirtWithGrass,true));
             bl->setPos(QVector3D(x,h,z));
+            blocksPos[std::make_pair(x,z)] = h;
             for(int h = 0;h<bl->getPos().y();++h){
-                Block *c_bl = new Block(core,Block::DirtWithGrass);
+                std::shared_ptr<Block>c_bl(new Block(core,Block::DirtWithGrass));
                 QVector3D temp_pos = bl->getPos();
                 temp_pos.setY(h);
                 c_bl->setPos(temp_pos);

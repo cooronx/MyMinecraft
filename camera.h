@@ -10,7 +10,7 @@
 #include <QtMath>
 #include <QMap>
 #include <QDebug>
-
+#include "chunk.h"
 
 enum Camera_Movement {
   FORWARD,
@@ -70,6 +70,5 @@ public:
 private:
     void updateCameraVectors();
     void processKeyboard(Camera_Movement direction, GLfloat deltaTime);//键盘处理事件函数
-
 };
 #endif // CAMERA_H

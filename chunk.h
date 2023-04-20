@@ -13,19 +13,20 @@
 #include <QPair>
 #include "PerlinNoise.hpp"
 #include "block.h"
+#include "SimplexNoise.h"
 
 constexpr int CHUNK_SIZE = 16*16;
 
 class Chunk
 {
 private:
-    QVector<Block*> blocks;
-    QMap <QPair<int,int>,int> heightMap;
     QOpenGLFunctions* core;
-    std::shared_ptr< std::set<QVector<int>> > blockSet;
+    QVector< std::shared_ptr<Block> > blocks;
+    QMap < QPair<int,int>,int > blocksPos;
 public:
     Chunk(QOpenGLFunctions*);
     void draw(const QMatrix4x4 &model, const QMatrix4x4& view, const QMatrix4x4 &projection);
+    bool checkPosHasBlock(const QVector3D& pos);
 private:
     void getHeightMap();
 };
